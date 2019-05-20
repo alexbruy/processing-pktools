@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
-                       QgsProcessing,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFile,
