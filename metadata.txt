@@ -1,0 +1,20 @@
+[general]
+name=pktools for Processing
+description=Set of handy image processing tools
+about=pktools is a GDAL-based suite of utilities written in C++ for image processing with a focus on remote sensing applications.
+category=Plugins
+version=0.1.0
+qgisMinimumVersion=3.0
+
+icon=icons/pktools.svg
+tags=analysis,processing,raster,remote sensing
+
+author=Alexander Bruy
+email=alexander.bruy@gmail.com
+
+homepage=https://plugins.bruy.me/processing-pktools.html
+tracker=https://github.com/alexbruy/processing-pktools/issues
+repository=https://github.com/alexbruy/processing-pktools
+
+experimental=True
+deprecated=False
