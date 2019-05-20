@@ -34,6 +34,8 @@ from qgis.core import QgsProcessingProvider
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
+from processing_pktools.algs.RasterFromText import RasterFromText
+
 from processing_pktools import pktoolsUtils
 
 pluginPath = os.path.dirname(__file__)
@@ -88,7 +90,7 @@ class PktoolsProvider(QgsProcessingProvider):
         return False
 
     def getAlgs(self):
-        algs = [
+        algs = [RasterFromText(),
                ]
 
         return algs
