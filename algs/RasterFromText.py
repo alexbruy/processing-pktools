@@ -49,6 +49,7 @@ class RasterFromText(PktoolsAlgorithm):
     SIZE_Y = 'SIZE_Y'
     CRS = 'CRS'
     OPTIONS = 'OPTIONS'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
@@ -102,13 +103,19 @@ class RasterFromText(PktoolsAlgorithm):
                                                     optional=True))
         params = []
         options = QgsProcessingParameterString(self.OPTIONS,
-                                               self.tr('Additional creation options'),
+                                               self.tr('Raster creation options'),
                                                defaultValue=None,
                                                optional=True)
         options.setMetadata({
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         params.append(options)
+
+        extra = QgsProcessingParameterString(self.EXTRA,
+                                             self.tr('Additional parameters'),
+                                             defaultValue=None,
+                                             optional=True)
+        params.append(extra)
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -142,6 +149,11 @@ class RasterFromText(PktoolsAlgorithm):
             options = self.parameterAsString(parameters, self.OPTIONS, context)
             if options:
                 arguments.extend(pktoolsUtils.parseCreationOptions(options))
+
+        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            if extra:
+                arguments.append(extra)
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))
