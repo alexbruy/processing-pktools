@@ -100,7 +100,7 @@ class RasterFromText(PktoolsAlgorithm):
                                                       defaultValue=None))
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Output coordinate reference system'),
-                                                    optional=True))
+                                                    defaultValue='EPSG:4326'))
         params = []
         options = QgsProcessingParameterString(self.OPTIONS,
                                                self.tr('Raster creation options'),
