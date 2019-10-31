@@ -98,7 +98,7 @@ class SunShadow(PktoolsAlgorithm):
                                                       maxValue=360,
                                                       defaultValue=None))
         self.addParameter(QgsProcessingParameterNumber(self.AZIMUTH_ANGLE,
-                                                      self.tr('Sun azimutр angle'),
+                                                      self.tr('Sun azimuth angle'),
                                                       type=QgsProcessingParameterNumber.Double,
                                                       minValue=0,
                                                       maxValue=360,
