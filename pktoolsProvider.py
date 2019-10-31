@@ -36,6 +36,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
 from processing_pktools.algs.ApplyColorTable import ApplyColorTable
 from processing_pktools.algs.CreateColorTable import CreateColorTable
+from processing_pktools.algs.FillNoData import FillNoData
 from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
@@ -102,6 +103,7 @@ class PktoolsProvider(QgsProcessingProvider):
         algs = [
                 ApplyColorTable(),
                 CreateColorTable(),
+                FillNoData(),
                 LasToRaster(),
                 RasterFromText(),
                 RasterToTextExtent(),
