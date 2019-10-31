@@ -62,6 +62,14 @@ def parseCreationOptions(value):
     return options
 
 
+def parseCompositeOption(switch, value):
+    parts = value.split(',')
+    options = []
+    for p in parts:
+        options.extend([switch, p])
+    return options
+
+
 def execute(commands, feedback=None):
     command = prepareArguments(commands)
 
