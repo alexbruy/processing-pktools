@@ -41,6 +41,7 @@ from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
+from processing_pktools.algs.SunShadow import SunShadow
 from processing_pktools.algs.VectorFromText import VectorFromText
 from processing_pktools.algs.VectorToText import VectorToText
 
@@ -106,6 +107,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 RasterToTextExtent(),
                 RasterToTextMask(),
                 RasterToVector(),
+                SunShadow(),
                 VectorFromText(),
                 VectorToText(),
                ]
