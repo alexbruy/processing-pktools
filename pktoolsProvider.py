@@ -34,6 +34,7 @@ from qgis.core import QgsProcessingProvider
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
+from processing_pktools.algs.ApplyColorTable import ApplyColorTable
 from processing_pktools.algs.CreateColorTable import CreateColorTable
 from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RasterFromText import RasterFromText
@@ -98,6 +99,7 @@ class PktoolsProvider(QgsProcessingProvider):
 
     def getAlgs(self):
         algs = [
+                ApplyColorTable(),
                 CreateColorTable(),
                 LasToRaster(),
                 RasterFromText(),
