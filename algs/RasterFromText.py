@@ -102,6 +102,11 @@ class RasterFromText(PktoolsAlgorithm):
                                                     self.tr('Output coordinate reference system'),
                                                     defaultValue='EPSG:4326'))
         params = []
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
+
         options = QgsProcessingParameterString(self.OPTIONS,
                                                self.tr('Raster creation options'),
                                                defaultValue=None,
@@ -110,12 +115,6 @@ class RasterFromText(PktoolsAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         params.append(options)
-
-        extra = QgsProcessingParameterString(self.EXTRA,
-                                             self.tr('Additional parameters'),
-                                             defaultValue=None,
-                                             optional=True)
-        params.append(extra)
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
