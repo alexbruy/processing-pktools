@@ -90,8 +90,8 @@ class FilterDem(PktoolsAlgorithm):
         self.filters = ((self.tr('vito'), 'vito'),
                         (self.tr('etew_min'), 'etew_min'),
                         (self.tr('Progressive morphological'), 'promorph'),
-                        (self.tr('Open'), 'open'),
-                        (self.tr('Close'), 'close')
+                        (self.tr('Morpholigical opening'), 'open'),
+                        (self.tr('Morpholigical closing'), 'close')
                        )
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
