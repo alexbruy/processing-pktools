@@ -134,14 +134,12 @@ class LasToRaster(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.SIZE_X,
                                                       self.tr('Output X resolution, meters'),
                                                       type=QgsProcessingParameterNumber.Double,
-                                                      minValue=0.01,
-                                                      maxValue=99999999.99,
+                                                      minValue=0,
                                                       defaultValue=None))
         self.addParameter(QgsProcessingParameterNumber(self.SIZE_Y,
                                                       self.tr('Output Y resolution, meters'),
                                                       type=QgsProcessingParameterNumber.Double,
-                                                      minValue=0.01,
-                                                      maxValue=99999999.99,
+                                                      minValue=0,
                                                       defaultValue=None))
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Output coordinate reference system')))

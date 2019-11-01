@@ -113,11 +113,7 @@ class FillNoData(PktoolsAlgorithm):
         arguments.append(layer.source())
         arguments.append('-m')
         arguments.append(mask.source())
-
-        for b in bands:
-            arguments.append('-b')
-            arguments.append('{}'.format(b))
-
+        arguments.extend(pktoolsUtils.parseCompositeOption('-b', bands))
         arguments.append('-d')
         arguments.append('{}'.format(self.parameterAsInt(parameters, self.DISTANCE, context)))
         arguments.append('-it')

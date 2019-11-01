@@ -63,10 +63,16 @@ def parseCreationOptions(value):
 
 
 def parseCompositeOption(switch, value):
-    parts = value.split(',')
     options = []
-    for p in parts:
-        options.extend([switch, p])
+
+    if isinstance(value, list):
+        for v in value:
+            options.extend([switch, str(v)])
+    else:
+        parts = value.split(',')
+        for p in parts:
+            options.extend([switch, p])
+
     return options
 
 

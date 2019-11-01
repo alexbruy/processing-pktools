@@ -85,13 +85,11 @@ class VectorFromText(PktoolsAlgorithm):
                                                       self.tr('Number of column with X values'),
                                                       type=QgsProcessingParameterNumber.Integer,
                                                       minValue=0,
-                                                      maxValue=99999999,
                                                       defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.COLUMN_Y,
                                                       self.tr('Number of column with Y values'),
                                                       type=QgsProcessingParameterNumber.Integer,
                                                       minValue=0,
-                                                      maxValue=99999999,
                                                       defaultValue=1))
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Output coordinate reference system'),

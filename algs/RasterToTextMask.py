@@ -36,6 +36,7 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
                        QgsProcessingParameterFileDestination
                       )
 
@@ -52,7 +53,7 @@ class RasterToTextMask(PktoolsAlgorithm):
     SIZE_X = 'SIZE_X'
     SIZE_Y = 'SIZE_Y'
     RESAMPLING = 'RESAMPLING'
-    NODATA = 'NODATA'
+    EXTRA = 'EXTRA'
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
@@ -112,18 +113,16 @@ class RasterToTextMask(PktoolsAlgorithm):
                                                    self.tr('Output X resolution, meters'),
                                                    type=QgsProcessingParameterNumber.Double,
                                                    minValue=0,
-                                                   maxValue=99999999.99,
-                                                   defaultValue=0.01))
+                                                   defaultValue=0))
         params.append(QgsProcessingParameterNumber(self.SIZE_Y,
                                                    self.tr('Output Y resolution, meters'),
                                                    type=QgsProcessingParameterNumber.Double,
                                                    minValue=0,
-                                                   maxValue=99999999.99,
-                                                   defaultValue=0.01))
-        params.append(QgsProcessingParameterNumber(self.NODATA,
-                                                   self.tr('Output NODATA value'),
-                                                   type=QgsProcessingParameterNumber.Integer,
                                                    defaultValue=0))
+        params.append(QgsProcessingParameterString(self.EXTRA,
+                                                   self.tr('Additional parameters'),
+                                                   defaultValue=None,
+                                                   optional=True))
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
@@ -160,8 +159,12 @@ class RasterToTextMask(PktoolsAlgorithm):
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.SIZE_Y, context)))
         arguments.append('-r')
         arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
-        arguments.append('-dstnodata')
-        arguments.append('{}'.format(self.parameterAsInt(parameters, self.NODATA, context)))
+
+        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            if extra:
+                arguments.append(extra)
+
         arguments.append('-o')
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
