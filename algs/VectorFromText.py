@@ -148,7 +148,6 @@ class VectorFromText(PktoolsAlgorithm):
 
         arguments.append('-of')
         arguments.append(QgsVectorFileWriter.driverForExtension(os.path.splitext(output)[1]))
-
         arguments.append('-o')
         arguments.append(output)
 

@@ -127,15 +127,15 @@ class CreateColorTable(PktoolsAlgorithm):
         if self.parameterAsBoolean(parameters, self.GRAYSCALE, context):
             arguments.append('-g')
 
-        if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
-            options = self.parameterAsString(parameters, self.OPTIONS, context)
-            if options:
-                arguments.extend(pktoolsUtils.parseCreationOptions(options))
-
         if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             if extra:
                 arguments.append(extra)
+
+        if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+            if options:
+                arguments.extend(pktoolsUtils.parseCreationOptions(options))
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))

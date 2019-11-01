@@ -49,8 +49,6 @@ class Sieve(PktoolsAlgorithm):
     SIZE = 'SIZE'
     CONNECTEDNESS = 'CONNECTEDNESS'
     MASK = 'MASK'
-    DATA_TYPE = 'DATA_TYPE'
-    COLOR_TABLE = 'COLOR_TABLE'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -81,12 +79,6 @@ class Sieve(PktoolsAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.dataTypes = [self.tr('Use input layer data type'),
-                          'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32',
-                          'Float32', 'Float64',
-                          'CInt16', 'CInt32', 'CFloat32', 'CFloat64'
-                         ]
-
         self.directions = ((self.tr('8 directions'), '8'),
                            (self.tr('4 directions'), '4'),
                           )
@@ -112,14 +104,6 @@ class Sieve(PktoolsAlgorithm):
         params.append(QgsProcessingParameterRasterLayer(self.MASK,
                                                         self.tr('Mask layer'),
                                                         optional=True))
-        params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                 self.tr('Output data type'),
-                                                 options=self.dataTypes,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterFile(self.COLOR_TABLE,
-                                                 self.tr('Color table'),
-                                                 behavior=QgsProcessingParameterFile.File,
-                                                 optional=True))
 
         options = QgsProcessingParameterString(self.OPTIONS,
                                                self.tr('Raster creation options'),
@@ -161,21 +145,10 @@ class Sieve(PktoolsAlgorithm):
                 arguments.append('-m')
                 arguments.append(filePath)
 
-        if self.COLOR_TABLE in parameters and  parameters[self.COLOR_TABLE] is not None:
-            filePath = self.parameterAsString(parameters, self.COLOR_TABLE, context)
-            if filePath:
-                arguments.append('-ct')
-                arguments.append(filePath)
-
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)
             if options:
                 arguments.extend(pktoolsUtils.parseCreationOptions(options))
-
-        dataType = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        if dataType:
-            arguments.append('-ot')
-            arguments.append(self.datatypes[dataType])
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))

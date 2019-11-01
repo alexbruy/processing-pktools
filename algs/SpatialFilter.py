@@ -45,14 +45,12 @@ from processing_pktools import pktoolsUtils
 class SpatialFilter(PktoolsAlgorithm):
 
     INPUT = 'INPUT'
-
     FILTER = 'FILTER'
     KERNEL_X = 'KERNEL_X'
     KERNEL_Y = 'KERNEL_Y'
     CIRCULAR = 'CIRCULAR'
     EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
-
     OUTPUT = 'OUTPUT'
 
     def commandName(self):

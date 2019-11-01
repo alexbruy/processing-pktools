@@ -48,8 +48,6 @@ class SunShadow(PktoolsAlgorithm):
     ZENITH_ANGLE = 'ZENITH_ANGLE'
     AZIMUTH_ANGLE = 'AZIMUTH_ANGLE'
     SHADOW = 'SHADOW'
-    DATA_TYPE = 'DATA_TYPE'
-    COLOR_TABLE = 'COLOR_TABLE'
     EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
@@ -81,13 +79,6 @@ class SunShadow(PktoolsAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.dataTypes = [self.tr('Use input layer data type'),
-                          'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32',
-                          'Float32', 'Float64',
-                          'CInt16', 'CInt32', 'CFloat32', 'CFloat64'
-                         ]
-
-
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input DEM')))
         self.addParameter(QgsProcessingParameterNumber(self.ZENITH_ANGLE,
@@ -108,14 +99,6 @@ class SunShadow(PktoolsAlgorithm):
                                                       defaultValue=0))
 
         params = []
-        params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                 self.tr('Output data type'),
-                                                 options=self.dataTypes,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterFile(self.COLOR_TABLE,
-                                                 self.tr('Color table'),
-                                                 behavior=QgsProcessingParameterFile.File,
-                                                 optional=True))
         params.append(QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional parameters'),
                                                    defaultValue=None,
@@ -155,30 +138,18 @@ class SunShadow(PktoolsAlgorithm):
         arguments.append('-f')
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.SHADOW, context)))
 
-        if self.COLOR_TABLE in parameters and  parameters[self.COLOR_TABLE] is not None:
-            filePath = self.parameterAsString(parameters, self.COLOR_TABLE, context)
-            if filePath:
-                arguments.append('-ct')
-                arguments.append(filePath)
+        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            if extra:
+                arguments.append(extra)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)
             if options:
                 arguments.extend(pktoolsUtils.parseCreationOptions(options))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
-
-        dataType = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        if dataType:
-            arguments.append('-ot')
-            arguments.append(self.datatypes[dataType])
-
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))
-
         arguments.append('-o')
         arguments.append(output)
 

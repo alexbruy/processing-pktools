@@ -130,7 +130,6 @@ class RasterToVector(PktoolsAlgorithm):
 
         arguments.append('-f')
         arguments.append(QgsVectorFileWriter.driverForExtension(os.path.splitext(output)[1]))
-
         arguments.append('-o')
         arguments.append(output)
 

@@ -50,8 +50,6 @@ class FilterDem(PktoolsAlgorithm):
     CIRCULAR = 'CIRCULAR'
     SLOPE_THRESHOLD = 'SLOPE_THRESHOLD'
     MIN_CHANGE = 'MIN_CHANGE'
-    DATA_TYPE = 'DATA_TYPE'
-    COLOR_TABLE = 'COLOR_TABLE'
     EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
@@ -81,12 +79,6 @@ class FilterDem(PktoolsAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.dataTypes = [self.tr('Use input layer data type'),
-                          'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32',
-                          'Float32', 'Float64',
-                          'CInt16', 'CInt32', 'CFloat32', 'CFloat64'
-                         ]
-
         self.filters = ((self.tr('vito'), 'vito'),
                         (self.tr('etew_min'), 'etew_min'),
                         (self.tr('Progressive morphological'), 'promorph'),
@@ -120,14 +112,6 @@ class FilterDem(PktoolsAlgorithm):
                                                    type=QgsProcessingParameterNumber.Integer,
                                                    minValue=0,
                                                    defaultValue=0))
-        params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                 self.tr('Output data type'),
-                                                 options=self.dataTypes,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterFile(self.COLOR_TABLE,
-                                                 self.tr('Color table'),
-                                                 behavior=QgsProcessingParameterFile.File,
-                                                 optional=True))
         params.append(QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional parameters'),
                                                    defaultValue=None,
@@ -173,26 +157,15 @@ class FilterDem(PktoolsAlgorithm):
         arguments.append('-minchange')
         arguments.append('{}'.format(self.parameterAsInt(parameters, self.MIN_CHANGE, context)))
 
-        if self.COLOR_TABLE in parameters and  parameters[self.COLOR_TABLE] is not None:
-            filePath = self.parameterAsString(parameters, self.COLOR_TABLE, context)
-            if filePath:
-                arguments.append('-ct')
-                arguments.append(filePath)
-
-        if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
-            options = self.parameterAsString(parameters, self.OPTIONS, context)
-            if options:
-                arguments.extend(pktoolsUtils.parseCreationOptions(options))
-
         if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
             extra = self.parameterAsString(parameters, self.EXTRA, context)
             if extra:
                 arguments.append(extra)
 
-        dataType = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        if dataType:
-            arguments.append('-ot')
-            arguments.append(self.datatypes[dataType])
+        if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
+            if options:
+                arguments.extend(pktoolsUtils.parseCreationOptions(options))
 
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))

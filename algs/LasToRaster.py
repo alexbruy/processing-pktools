@@ -49,17 +49,13 @@ class LasToRaster(PktoolsAlgorithm):
     ATTRIBUTE = 'ATTRIBUTE'
     COMPOSITE = 'COMPOSITE'
     FILTER = 'FILTER'
-
     EXTENT = 'EXTENT'
     SIZE_X = 'SIZE_X'
     SIZE_Y = 'SIZE_Y'
     CRS = 'CRS'
     CLASSES = 'CLASSES'
-    DATA_TYPE = 'DATA_TYPE'
-    COLOR_TABLE = 'COLOR_TABLE'
     EXTRA = 'EXTRA'
     OPTIONS = 'OPTIONS'
-
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
@@ -117,12 +113,6 @@ class LasToRaster(PktoolsAlgorithm):
                         (self.tr('All'), 'all'),
                        )
 
-        self.dataTypes = [self.tr('Use input layer data type'),
-                          'Byte', 'Int16', 'UInt16', 'UInt32', 'Int32',
-                          'Float32', 'Float64',
-                          'CInt16', 'CInt32', 'CFloat32', 'CFloat64'
-                         ]
-
         self.addParameter(QgsProcessingParameterFile(self.INPUT,
                                                      self.tr('Input LAS file'),
                                                      behavior=QgsProcessingParameterFile.File,
@@ -161,14 +151,6 @@ class LasToRaster(PktoolsAlgorithm):
                                                    self.tr('Classes to keep'),
                                                    defaultValue=None,
                                                    optional=True))
-        params.append(QgsProcessingParameterEnum(self.DATA_TYPE,
-                                                 self.tr('Output data type'),
-                                                 options=self.dataTypes,
-                                                 defaultValue=0))
-        params.append(QgsProcessingParameterFile(self.COLOR_TABLE,
-                                                 self.tr('Color table'),
-                                                 behavior=QgsProcessingParameterFile.File,
-                                                 optional=True))
         params.append(QgsProcessingParameterString(self.EXTRA,
                                                    self.tr('Additional parameters'),
                                                    defaultValue=None,
@@ -225,30 +207,18 @@ class LasToRaster(PktoolsAlgorithm):
             if classes != '':
                 arguments.extend(pktoolsUtils.parseCompositeOption('-class', classes))
 
-        if self.COLOR_TABLE in parameters and  parameters[self.COLOR_TABLE] is not None:
-            filePath = self.parameterAsString(parameters, self.COLOR_TABLE, context)
-            if filePath:
-                arguments.append('-ct')
-                arguments.append(filePath)
+        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
+            extra = self.parameterAsString(parameters, self.EXTRA, context)
+            if extra:
+                arguments.append(extra)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)
             if options:
                 arguments.extend(pktoolsUtils.parseCreationOptions(options))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
-
-        dataType = self.parameterAsEnum(parameters, self.DATA_TYPE, context)
-        if dataType:
-            arguments.append('-ot')
-            arguments.append(self.datatypes[dataType])
-
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(output)[1]))
-
         arguments.append('-o')
         arguments.append(output)
 
