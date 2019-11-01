@@ -27,8 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessing,
-                       QgsProcessingException,
+from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,

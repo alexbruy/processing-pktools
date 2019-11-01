@@ -83,7 +83,8 @@ class RasterToVector(PktoolsAlgorithm):
                                                      defaultValue=1,
                                                      parentLayerParameterName=self.INPUT))
         self.addParameter(QgsProcessingParameterRasterLayer(self.MASK,
-                                                            self.tr('Mask layer')))
+                                                            self.tr('Mask layer'),
+                                                            optional=True))
         params = []
         params.append(QgsProcessingParameterString(self.FIELD_NAME,
                                                    self.tr('Field name'),
