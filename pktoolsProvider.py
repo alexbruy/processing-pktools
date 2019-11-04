@@ -44,6 +44,7 @@ from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
+from processing_pktools.algs.RegularSampling import RegularSampling
 from processing_pktools.algs.Sieve import Sieve
 from processing_pktools.algs.SpatialFilter import SpatialFilter
 from processing_pktools.algs.SpectralFilter import SpectralFilter
@@ -116,6 +117,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 RasterToTextExtent(),
                 RasterToTextMask(),
                 RasterToVector(),
+                RegularSampling(),
                 Sieve(),
                 SpatialFilter(),
                 SpectralFilter(),
