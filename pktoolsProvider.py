@@ -39,6 +39,7 @@ from processing_pktools.algs.CreateColorTable import CreateColorTable
 from processing_pktools.algs.FillNoData import FillNoData
 from processing_pktools.algs.FilterDem import FilterDem
 from processing_pktools.algs.LasToRaster import LasToRaster
+from processing_pktools.algs.RandomSampling import RandomSampling
 from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
@@ -110,6 +111,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 FillNoData(),
                 FilterDem(),
                 LasToRaster(),
+                RandomSampling(),
                 RasterFromText(),
                 RasterToTextExtent(),
                 RasterToTextMask(),
