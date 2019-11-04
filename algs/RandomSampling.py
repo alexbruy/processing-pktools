@@ -146,35 +146,38 @@ class RandomSampling(PktoolsAlgorithm):
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
+        rule = self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1]
+        if rule in ('mode', 'proportion', 'count') and (self.CLASSES not in parameters or parameters[self.CLASSES] is None):
+            raise QgsProcessingException(self.tr('Please specify classes to extract or choose another extraction rule.'))
+
+        if rule == 'percentile' and (self.PERCENTILE not in parameters or parameters[self.PERCENTILE] is None):
+            raise QgsProcessingException(self.tr('Please specify percentile or choose another extraction rule.'))
+
+
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
         arguments.append(self.commandName())
         arguments.append('-i')
         arguments.append(layer.source())
-        arguments.append('-r')
-        arguments.append(self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1])
         arguments.append('-rand')
         arguments.append('{}'.format(self.parameterAsInt(parameters, self.COUNT, context)))
+        arguments.append('-buf')
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BUFFER, context)))
+        arguments.append('-r')
+        arguments.append(rule)
+
+        if rule in ('mode', 'proportion', 'count'):
+            classes = self.parameterAsString(parameters, self.CLASSES, context)
+            arguments.append(pktoolsUtils.parseCompositeOption('-c', classes))
+
+        if rule == 'persentile':
+            arguments.append('-perc')
+            arguments.append('{}'.format(self.parameterAsDouble(parameters, self.PERCENTILE, context)))
 
         if self.THRESHOLD in parameters and  parameters[self.THRESHOLD] is not None:
             arguments.append('-t')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.THRESHOLD, context)))
-
-        rule = self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1]
-        if rule in ('mode', 'proportion', 'count'):
-            if self.CLASSES in parameters and  parameters[self.CLASSES] is not None:
-                classes = self.parameterAsString(parameters, self.CLASSES, context)
-                arguments.append(pktoolsUtils.parseCompositeOption('-c', classes))
-            else:
-                raise QgsProcessingException(self.tr('Please specify classes to extract.'))
-
-        if rule == 'persentile':
-            if self.PERCENTILE in parameters and  parameters[self.PERCENTILE] is not None:
-                arguments.append('-perc')
-                arguments.append('{}'.format(self.parameterAsDouble(parameters, self.PERCENTILE, context)))
-            else:
-                raise QgsProcessingException(self.tr('Please specify pecentile.'))
 
         if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
             extra = self.parameterAsString(parameters, self.EXTRA, context)
