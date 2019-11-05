@@ -161,7 +161,7 @@ class VectorSampling(PktoolsAlgorithm):
 
 
         sampleLayer, sampleLayerName = self.parameterAsCompatibleSourceLayerPathAndLayerName(parameters,
-                                                                                             self.INPUT,
+                                                                                             self.SAMPLES,
                                                                                              context,
                                                                                              QgsVectorFileWriter.supportedFormatExtensions(),
                                                                                              'gpkg',
