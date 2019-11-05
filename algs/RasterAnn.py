@@ -81,7 +81,7 @@ class RasterAnn(PktoolsAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
-                                                            self.tr('Input DEM')))
+                                                            self.tr('Input raster')))
         self.addParameter(QgsProcessingParameterFeatureSource(self.TRAINING,
                                                               self.tr('Training vector'),
                                                               types=[QgsProcessing.TypeVectorPoint]))
