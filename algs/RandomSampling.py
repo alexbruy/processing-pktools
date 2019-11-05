@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingException,
+from qgis.core import (QgsVectorFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
