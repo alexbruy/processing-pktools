@@ -41,6 +41,7 @@ from processing_pktools.algs.FilterDem import FilterDem
 from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RandomSampling import RandomSampling
 from processing_pktools.algs.RasterFromText import RasterFromText
+from processing_pktools.algs.RasterSampling import RasterSampling
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
@@ -115,6 +116,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 LasToRaster(),
                 RandomSampling(),
                 RasterFromText(),
+                RasterSampling(),
                 RasterToTextExtent(),
                 RasterToTextMask(),
                 RasterToVector(),
