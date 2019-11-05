@@ -132,7 +132,5 @@ class PktoolsProvider(QgsProcessingProvider):
         for a in self.algs:
             self.addAlgorithm(a)
 
-    def tr(self, string, context=''):
-        if context == '':
-            context = 'PktoolsProvider'
-        return QCoreApplication.translate(context, string)
+    def tr(self, string):
+        return QCoreApplication.translate(self.__class__.__name__, string)
