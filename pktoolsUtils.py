@@ -34,7 +34,6 @@ from qgis.core import Qgis, QgsMessageLog, QgsProcessingFeedback
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
-PKTOOLS_ACTIVE = 'PKTOOLS_ACTIVE'
 PKTOOLS_DIRECTORY = 'PKTOOLS_DIRECTORY'
 PKTOOLS_VERBOSE = 'PKTOOLS_VERBOSE'
 

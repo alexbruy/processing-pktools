@@ -80,10 +80,6 @@ class PktoolsProvider(QgsProcessingProvider):
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
         ProcessingConfig.addSetting(Setting(self.name(),
-                                            pktoolsUtils.PKTOOLS_ACTIVE,
-                                            self.tr('Activate'),
-                                            False))
-        ProcessingConfig.addSetting(Setting(self.name(),
                                             pktoolsUtils.PKTOOLS_DIRECTORY,
                                             self.tr('pktools directory'),
                                             pktoolsUtils.pktoolsDirectory(),
@@ -97,15 +93,8 @@ class PktoolsProvider(QgsProcessingProvider):
         return True
 
     def unload(self):
-        ProcessingConfig.removeSetting(pktoolsUtils.PKTOOLS_ACTIVE)
         ProcessingConfig.removeSetting(pktoolsUtils.PKTOOLS_DIRECTORY)
         ProcessingConfig.removeSetting(pktoolsUtils.PKTOOLS_VERBOSE)
-
-    def isActive(self):
-        return ProcessingConfig.getSetting(pktoolsUtils.PKTOOLS_ACTIVE)
-
-    def setActive(self, active):
-        ProcessingConfig.setSettingValue(pktoolsUtils.PKTOOLS_ACTIVE, active)
 
     def supportsNonFileBasedOutput(self):
         return False
