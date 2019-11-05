@@ -44,6 +44,7 @@ from processing_pktools.algs.RasterAnn import RasterAnn
 from processing_pktools.algs.RasterComposite import RasterComposite
 from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterSampling import RasterSampling
+from processing_pktools.algs.RasterSvm import RasterSvm
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
@@ -121,6 +122,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 RasterComposite(),
                 RasterFromText(),
                 RasterSampling(),
+                RasterSvm(),
                 RasterToTextExtent(),
                 RasterToTextMask(),
                 RasterToVector(),
