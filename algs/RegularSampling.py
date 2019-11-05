@@ -50,11 +50,11 @@ class RegularSampling(PktoolsAlgorithm):
     CLASSES = 'CLASSES'
     THRESHOLD = 'THRESHOLD'
     PERCENTILE = 'PERCENTILE'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
-        return 'pkextractogr'
+        return 'pkARGUMENTSctogr'
 
     def name(self):
         return 'regularsampling'
@@ -69,10 +69,10 @@ class RegularSampling(PktoolsAlgorithm):
         return 'sampling'
 
     def tags(self):
-        return self.tr('raster,sampling,extract,regular,grid').split(',')
+        return self.tr('raster,sampling,ARGUMENTSct,regular,grid').split(',')
 
     def shortHelpString(self):
-        return self.tr('Extracts pixel values from an input raster '
+        return self.tr('ARGUMENTScts pixel values from an input raster '
                        'dataset following a systematic grid with '
                        'user-defined cell size.')
 
@@ -114,7 +114,7 @@ class RegularSampling(PktoolsAlgorithm):
                                                    minValue=0,
                                                    defaultValue=3))
         params.append(QgsProcessingParameterString(self.CLASSES,
-                                                   self.tr('Classes to extract from raster'),
+                                                   self.tr('Classes to ARGUMENTSct from raster'),
                                                    defaultValue=None,
                                                    optional=True))
         params.append(QgsProcessingParameterNumber(self.THRESHOLD,
@@ -131,8 +131,8 @@ class RegularSampling(PktoolsAlgorithm):
                                                    maxValue=100,
                                                    defaultValue=None,
                                                    optional=True))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -150,10 +150,10 @@ class RegularSampling(PktoolsAlgorithm):
 
         rule = self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1]
         if rule in ('mode', 'proportion', 'count') and (self.CLASSES not in parameters or parameters[self.CLASSES] is None):
-            raise QgsProcessingException(self.tr('Please specify classes to extract or choose another extraction rule.'))
+            raise QgsProcessingException(self.tr('Please specify classes to ARGUMENTSct or choose another ARGUMENTSction rule.'))
 
         if rule == 'percentile' and (self.PERCENTILE not in parameters or parameters[self.PERCENTILE] is None):
-            raise QgsProcessingException(self.tr('Please specify percentile or choose another extraction rule.'))
+            raise QgsProcessingException(self.tr('Please specify percentile or choose another ARGUMENTSction rule.'))
 
 
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -181,10 +181,10 @@ class RegularSampling(PktoolsAlgorithm):
             arguments.append('-t')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.THRESHOLD, context)))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         arguments.append('-f')
         arguments.append(QgsVectorFileWriter.driverForExtension(os.path.splitext(output)[1]))

@@ -53,7 +53,7 @@ class RasterToTextMask(PktoolsAlgorithm):
     SIZE_X = 'SIZE_X'
     SIZE_Y = 'SIZE_Y'
     RESAMPLING = 'RESAMPLING'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
@@ -119,8 +119,8 @@ class RasterToTextMask(PktoolsAlgorithm):
                                                    type=QgsProcessingParameterNumber.Double,
                                                    minValue=0,
                                                    defaultValue=0))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
         for p in params:
@@ -160,10 +160,10 @@ class RasterToTextMask(PktoolsAlgorithm):
         arguments.append('-r')
         arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         arguments.append('-o')
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))

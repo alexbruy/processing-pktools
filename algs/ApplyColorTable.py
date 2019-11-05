@@ -44,7 +44,7 @@ class ApplyColorTable(PktoolsAlgorithm):
 
     INPUT = 'INPUT'
     COLOR_TABLE = 'COLOR_TABLE'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -80,8 +80,8 @@ class ApplyColorTable(PktoolsAlgorithm):
                                                      behavior=QgsProcessingParameterFile.File))
 
         params = []
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -115,10 +115,10 @@ class ApplyColorTable(PktoolsAlgorithm):
         arguments.append('-ct')
         arguments.append(self.parameterAsFile(parameters, self.COLOR_TABLE, context))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

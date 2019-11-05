@@ -52,7 +52,7 @@ class VectorSampling(PktoolsAlgorithm):
     CLASSES = 'CLASSES'
     THRESHOLD = 'THRESHOLD'
     PERCENTILE = 'PERCENTILE'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
@@ -131,8 +131,8 @@ class VectorSampling(PktoolsAlgorithm):
                                                    maxValue=100,
                                                    defaultValue=None,
                                                    optional=True))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -194,10 +194,10 @@ class VectorSampling(PktoolsAlgorithm):
             arguments.append('-t')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.THRESHOLD, context)))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         arguments.append('-f')
         arguments.append(QgsVectorFileWriter.driverForExtension(os.path.splitext(output)[1]))

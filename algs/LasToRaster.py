@@ -54,7 +54,7 @@ class LasToRaster(PktoolsAlgorithm):
     SIZE_Y = 'SIZE_Y'
     CRS = 'CRS'
     CLASSES = 'CLASSES'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -149,8 +149,8 @@ class LasToRaster(PktoolsAlgorithm):
                                                    self.tr('Classes to keep'),
                                                    defaultValue=None,
                                                    optional=True))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -205,10 +205,10 @@ class LasToRaster(PktoolsAlgorithm):
             if classes != '':
                 arguments.extend(pktoolsUtils.parseCompositeOption('-class', classes))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

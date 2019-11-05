@@ -48,7 +48,7 @@ class SpatialFilter(PktoolsAlgorithm):
     KERNEL_X = 'KERNEL_X'
     KERNEL_Y = 'KERNEL_Y'
     CIRCULAR = 'CIRCULAR'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -135,8 +135,8 @@ class SpatialFilter(PktoolsAlgorithm):
         params.append(QgsProcessingParameterBoolean(self.CIRCULAR,
                                                     self.tr('Use circular disc kernel for dilation and erosion'),
                                                     defaultValue=False))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -177,10 +177,10 @@ class SpatialFilter(PktoolsAlgorithm):
         if self.parameterAsBoolean(parameters, self.CIRCULAR, context):
             arguments.append('-circ')
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

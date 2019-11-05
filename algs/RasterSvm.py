@@ -54,7 +54,7 @@ class RasterSvm(PktoolsAlgorithm):
     DEGREE = 'DEGREE'
     COEF_0 = 'COEF_0'
     GAMMA = 'GAMMA'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -133,8 +133,8 @@ class RasterSvm(PktoolsAlgorithm):
                                                    minValue=0,
                                                    defaultValue=0,
                                                    optional=True))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -197,10 +197,10 @@ class RasterSvm(PktoolsAlgorithm):
             arguments.append('-c0')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.COEF_0, context)))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

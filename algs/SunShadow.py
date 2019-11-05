@@ -48,7 +48,7 @@ class SunShadow(PktoolsAlgorithm):
     ZENITH_ANGLE = 'ZENITH_ANGLE'
     AZIMUTH_ANGLE = 'AZIMUTH_ANGLE'
     SHADOW = 'SHADOW'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -99,8 +99,8 @@ class SunShadow(PktoolsAlgorithm):
                                                       defaultValue=0))
 
         params = []
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -138,10 +138,10 @@ class SunShadow(PktoolsAlgorithm):
         arguments.append('-f')
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.SHADOW, context)))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

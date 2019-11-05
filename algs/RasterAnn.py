@@ -50,7 +50,7 @@ class RasterAnn(PktoolsAlgorithm):
     FIELD = 'FIELD'
     NEURONS = 'NEURONS'
     N_FOLD = 'N_FOLD'
-    EXTRA = 'EXTRA'
+    ARGUMENTS = 'ARGUMENTS'
     OPTIONS = 'OPTIONS'
     OUTPUT = 'OUTPUT'
 
@@ -100,8 +100,8 @@ class RasterAnn(PktoolsAlgorithm):
                                                    minValue=0,
                                                    defaultValue=None,
                                                    optional=True))
-        params.append(QgsProcessingParameterString(self.EXTRA,
-                                                   self.tr('Additional parameters'),
+        params.append(QgsProcessingParameterString(self.ARGUMENTS,
+                                                   self.tr('Additional arguments'),
                                                    defaultValue=None,
                                                    optional=True))
 
@@ -156,10 +156,10 @@ class RasterAnn(PktoolsAlgorithm):
             arguments.append('-cv')
             arguments.append('{}'.format(self.parameterAsInt(parameters, self.N_FOLD, context)))
 
-        if self.EXTRA in parameters and  parameters[self.EXTRA] is not None:
-            extra = self.parameterAsString(parameters, self.EXTRA, context)
-            if extra:
-                arguments.append(extra)
+        if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
+            if args:
+                arguments.extend(args)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)
