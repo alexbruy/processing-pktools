@@ -50,6 +50,7 @@ from processing_pktools.algs.SpatialFilter import SpatialFilter
 from processing_pktools.algs.SpectralFilter import SpectralFilter
 from processing_pktools.algs.SunShadow import SunShadow
 from processing_pktools.algs.VectorFromText import VectorFromText
+from processing_pktools.algs.VectorSampling import VectorSampling
 from processing_pktools.algs.VectorToText import VectorToText
 
 from processing_pktools import pktoolsUtils
@@ -123,6 +124,7 @@ class PktoolsProvider(QgsProcessingProvider):
                 SpectralFilter(),
                 SunShadow(),
                 VectorFromText(),
+                VectorSampling(),
                 VectorToText(),
                ]
 
