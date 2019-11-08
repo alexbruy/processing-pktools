@@ -170,7 +170,7 @@ class LasToRaster(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Output file')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -220,6 +220,4 @@ class LasToRaster(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

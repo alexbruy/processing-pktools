@@ -131,7 +131,7 @@ class RasterToTextMask(PktoolsAlgorithm):
                                                                 self.tr('Output file'),
                                                                 self.tr('Text files (*.txt *.TXT)')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -168,6 +168,4 @@ class RasterToTextMask(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

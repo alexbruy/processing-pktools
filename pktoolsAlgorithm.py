@@ -54,6 +54,19 @@ class PktoolsAlgorithm(QgsProcessingAlgorithm):
     def command(self):
         return os.path.join(pktoolsUtils.pktoolsDirectory(), self.commandName())
 
+    def helpUrl(self):
+        return 'http://pktools.nongnu.org/html/{}.html'.format(self.name())
+
+    def generateCommand(self, parameters, context, feedback):
+        return None
+
+    def processAlgorithm(self, parameters, context, feedback):
+        command = generateCommand(self, parameters, context, feedback)
+
+        pktoolsUtils.execute(command, feedback)
+
+        return self.algorithmResults(parameters)
+
     def algorithmResults(self, parameters):
         results = {}
         for output in self.outputDefinitions():
@@ -62,9 +75,6 @@ class PktoolsAlgorithm(QgsProcessingAlgorithm):
                 results[outputName] = parameters[outputName]
 
         return results
-
-    def helpUrl(self):
-        return 'http://pktools.nongnu.org/html/{}.html'.format(self.name())
 
     def tr(self, text):
         return QCoreApplication.translate(self.__class__.__name__, text)

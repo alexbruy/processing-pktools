@@ -130,7 +130,7 @@ class SpectralFilter(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Output file')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -161,6 +161,4 @@ class SpectralFilter(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

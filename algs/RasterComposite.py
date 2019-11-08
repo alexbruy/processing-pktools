@@ -118,7 +118,7 @@ class RasterComposite(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Output raster')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -152,6 +152,4 @@ class RasterComposite(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

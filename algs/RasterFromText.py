@@ -121,7 +121,7 @@ class RasterFromText(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Output raster')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         point = self.parameterAsPoint(parameters, self.UL_POINT, context)
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -157,6 +157,4 @@ class RasterFromText(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

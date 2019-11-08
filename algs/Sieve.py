@@ -155,6 +155,4 @@ class Sieve(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

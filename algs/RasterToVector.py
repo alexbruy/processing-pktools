@@ -101,7 +101,7 @@ class RasterToVector(PktoolsAlgorithm):
                                                                   self.tr('Output file'),
                                                                   QgsProcessing.TypeVectorPolygon))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -133,6 +133,4 @@ class RasterToVector(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(output)
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments

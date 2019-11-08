@@ -103,7 +103,7 @@ class VectorToText(PktoolsAlgorithm):
                                                                 self.tr('Output file'),
                                                                 self.tr('Text files (*.txt *.TXT)')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         layer, layerName = self.parameterAsCompatibleSourceLayerPathAndLayerName(parameters,
                                                                                  self.INPUT,
                                                                                  context,
@@ -137,6 +137,4 @@ class VectorToText(PktoolsAlgorithm):
         arguments.append('-o')
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
-        pktoolsUtils.execute(arguments, feedback)
-
-        return self.algorithmResults(parameters)
+        return arguments
