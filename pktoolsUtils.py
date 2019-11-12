@@ -54,21 +54,17 @@ def prepareArguments(arguments):
 
 
 def parseCreationOptions(value):
-    parts = value.split('|')
-    options = []
-    for p in parts:
-        options.extend(['-co', p])
-    return options
+    return parseCompositeOption('-co', value, '|')
 
 
-def parseCompositeOption(switch, value):
+def parseCompositeOption(switch, value, separator=','):
     options = []
 
     if isinstance(value, list):
         for v in value:
             options.extend([switch, str(v)])
     else:
-        parts = value.split(',')
+        parts = value.split(separator)
         for p in parts:
             options.extend([switch, p])
 
