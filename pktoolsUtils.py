@@ -66,7 +66,7 @@ def parseCompositeOption(switch, value, separator=','):
     else:
         parts = value.split(separator)
         for p in parts:
-            options.extend([switch, p])
+            options.extend([switch, p.strip()])
 
     return options
 
