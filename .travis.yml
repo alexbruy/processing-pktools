@@ -1,0 +1,30 @@
+services:
+  - docker
+
+env:
+  global:
+    - IMAGE=qgis/qgis
+
+  matrix:
+    - QGIS_VERSION_TAG=latest
+    - QGIS_VERSION_TAG=release-3_10
+
+language: python
+
+python:
+  - "3.6"
+
+before_install:
+  - docker pull ${IMAGE}:${QGIS_VERSION_TAG}
+
+install:
+  - docker run -d --name qgis-testing-environment -v ${TRAVIS_BUILD_DIR}:/tests_directory -e DISPLAY=:99 ${IMAGE}:${QGIS_VERSION_TAG}
+  - sleep 10
+  - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh processing_pktools"
+  - docker exec -it qgis-testing-environment sh -c "rm -f /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/processing_pktools"
+  - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/processing_pktools"
+
+script:
+  - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh tests.suite.test_all"
+
+sudo: false
