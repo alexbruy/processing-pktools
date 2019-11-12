@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
-import pipes
+import shlex
 import subprocess
 
 from qgis.core import Qgis, QgsMessageLog, QgsProcessingFeedback
@@ -49,7 +49,7 @@ def prepareArguments(arguments):
     else:
         prepared = []
         for a in arguments:
-            prepared.append(pipes.quote(a))
+            prepared.append(shlex.quote(a))
         return ' '.join(prepared)
 
 
