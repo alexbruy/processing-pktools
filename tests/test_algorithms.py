@@ -45,6 +45,7 @@ from processing_pktools.algs.RandomSampling import RandomSampling
 from processing_pktools.algs.RasterAnn import RasterAnn
 from processing_pktools.algs.RasterComposite import RasterComposite
 from processing_pktools.algs.RasterFromText import RasterFromText
+from processing_pktools.algs.RasterSampling import RasterSampling
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -613,6 +614,50 @@ class TestAlgorithms(unittest.TestCase):
                  '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:4326',
                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                  '-of', 'GTiff', '-o', output])
+
+    def testRasterSampling(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterSampling()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'mask.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.shp'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractimg', '-i', source, '-s', mask,
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'CLASSES': '5,10',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractimg', '-i', source, '-s', mask, '-c', '5', '-c', '10',
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'THRESHOLD': 75,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractimg', '-i', source, '-s', mask, '-t', '75.0',
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'ARGUMENTS': '-b 1',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractimg', '-i', source, '-s', mask, '-b', '1',
+                 '-f', 'ESRI Shapefile', '-o', output])
 
 
 if __name__ == '__main__':

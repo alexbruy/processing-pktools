@@ -50,7 +50,7 @@ class RasterSampling(PktoolsAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
-        return 'pkARGUMENTSctimg'
+        return 'pkextractimg'
 
     def name(self):
         return 'rastersampling'
@@ -83,7 +83,7 @@ class RasterSampling(PktoolsAlgorithm):
 
         params = []
         params.append(QgsProcessingParameterString(self.CLASSES,
-                                                   self.tr('Classes to ARGUMENTSct from raster'),
+                                                   self.tr('Classes to extract from raster'),
                                                    defaultValue=None,
                                                    optional=True))
         params.append(QgsProcessingParameterNumber(self.THRESHOLD,
@@ -129,7 +129,7 @@ class RasterSampling(PktoolsAlgorithm):
 
         if self.CLASSES in parameters and  parameters[self.CLASSES] is not None:
             classes = self.parameterAsString(parameters, self.CLASSES, context)
-            arguments.append(pktoolsUtils.parseCompositeOption('-c', classes))
+            arguments.extend(pktoolsUtils.parseCompositeOption('-c', classes))
 
         if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
             args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
