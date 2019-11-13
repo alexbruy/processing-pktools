@@ -44,6 +44,7 @@ from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RandomSampling import RandomSampling
 from processing_pktools.algs.RasterAnn import RasterAnn
 from processing_pktools.algs.RasterComposite import RasterComposite
+from processing_pktools.algs.RasterFromText import RasterFromText
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -564,6 +565,54 @@ class TestAlgorithms(unittest.TestCase):
                  '-cb', '1', '-cb', '2', '-co', 'COMPRESS=DEFLATE',
                  '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
                  '-o', output])
+
+    def testRasterFromText(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterFromText()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'data.txt')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'UL_POINT': '18.67,45.77',
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:4326',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2img', '-i', source, '-ulx', '18.67', '-uly', '45.77',
+                 '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:4326',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'UL_POINT': '18.67,45.77',
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:4326',
+                                     'ARGUMENTS': '-ot Float32',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2img', '-i', source, '-ulx', '18.67', '-uly', '45.77',
+                 '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:4326',
+                 '-ot', 'Float32', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'UL_POINT': '18.67,45.77',
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:4326',
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2img', '-i', source, '-ulx', '18.67', '-uly', '45.77',
+                 '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:4326',
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
 
 
 if __name__ == '__main__':
