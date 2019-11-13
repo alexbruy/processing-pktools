@@ -47,6 +47,7 @@ from processing_pktools.algs.RasterComposite import RasterComposite
 from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterSampling import RasterSampling
 from processing_pktools.algs.RasterSvm import RasterSvm
+from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -751,6 +752,76 @@ class TestAlgorithms(unittest.TestCase):
                  '-svmt', 'C_SVC', '-kt', 'radial', '-co', 'COMPRESS=DEFLATE',
                  '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
                  '-o', output])
+
+    def testRasterToTextExtent(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterToTextExtent()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.txt'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BAND': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '2', '-of', 'matrix',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'EXTENT': '635616.3,638864.6,848977.79,853362.37',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                 '-ulx', '635616.3', '-uly', '853362.37',
+                 '-lrx', '638864.6', '-lry', '848977.79',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FORMAT': 1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'list',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RESAMPLING': 1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'bilinear', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 0.1,
+                                     'SIZE_Y': 0.1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.1', '-dy', '0.1', '-r', 'near', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ARGUMENTS': '-dstnodata -9999',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                 '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
+                 '-dx', '0.0', '-dy', '0.0', '-r', 'near',
+                 '-dstnodata', '-9999', '-o', output])
 
 
 if __name__ == '__main__':
