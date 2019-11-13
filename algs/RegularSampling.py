@@ -54,7 +54,7 @@ class RegularSampling(PktoolsAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def commandName(self):
-        return 'pkARGUMENTSctogr'
+        return 'pkextractogr'
 
     def name(self):
         return 'regularsampling'
@@ -69,10 +69,10 @@ class RegularSampling(PktoolsAlgorithm):
         return 'sampling'
 
     def tags(self):
-        return self.tr('raster,sampling,ARGUMENTSct,regular,grid').split(',')
+        return self.tr('raster,sampling,extract,regular,grid').split(',')
 
     def shortHelpString(self):
-        return self.tr('ARGUMENTScts pixel values from an input raster '
+        return self.tr('Extracts pixel values from an input raster '
                        'dataset following a systematic grid with '
                        'user-defined cell size.')
 
@@ -114,7 +114,7 @@ class RegularSampling(PktoolsAlgorithm):
                                                    minValue=0,
                                                    defaultValue=3))
         params.append(QgsProcessingParameterString(self.CLASSES,
-                                                   self.tr('Classes to ARGUMENTSct from raster'),
+                                                   self.tr('Classes to extract from raster'),
                                                    defaultValue=None,
                                                    optional=True))
         params.append(QgsProcessingParameterNumber(self.THRESHOLD,
@@ -150,10 +150,10 @@ class RegularSampling(PktoolsAlgorithm):
 
         rule = self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1]
         if rule in ('mode', 'proportion', 'count') and (self.CLASSES not in parameters or parameters[self.CLASSES] is None):
-            raise QgsProcessingException(self.tr('Please specify classes to ARGUMENTSct or choose another ARGUMENTSction rule.'))
+            raise QgsProcessingException(self.tr('Please specify classes to extract or choose another extraction rule.'))
 
         if rule == 'percentile' and (self.PERCENTILE not in parameters or parameters[self.PERCENTILE] is None):
-            raise QgsProcessingException(self.tr('Please specify percentile or choose another ARGUMENTSction rule.'))
+            raise QgsProcessingException(self.tr('Please specify percentile or choose another extraction rule.'))
 
 
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
