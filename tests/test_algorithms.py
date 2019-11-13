@@ -43,6 +43,7 @@ from processing_pktools.algs.FilterDem import FilterDem
 from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RandomSampling import RandomSampling
 from processing_pktools.algs.RasterAnn import RasterAnn
+from processing_pktools.algs.RasterComposite import RasterComposite
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -510,6 +511,59 @@ class TestAlgorithms(unittest.TestCase):
                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                  '-of', 'GTiff', '-o', output])
 
+    def testRasterComposite(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterComposite()
+        alg.initAlgorithm()
+
+        source_1 = os.path.join(testDataPath, 'dem.tif')
+        source_2 = os.path.join(testDataPath, 'mask.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': [source_1],
+                                     'BANDS': '1,2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcomposite', '-i', source_1, '-cr', 'overwrite',
+                 '-cb', '1', '-cb', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': [source_1, source_2],
+                                     'BANDS': '1,2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcomposite', '-i', source_1, '-i', source_2, '-cr', 'overwrite',
+                 '-cb', '1', '-cb', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': [source_1],
+                                     'BANDS': '1,2',
+                                     'RULE': 4,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcomposite', '-i', source_1, '-cr', 'mean',
+                 '-cb', '1', '-cb', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': [source_1],
+                                     'BANDS': '1,2',
+                                     'ARGUMENTS': '-r near',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcomposite', '-i', source_1, '-cr', 'overwrite',
+                 '-cb', '1', '-cb', '2', '-r', 'near', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': [source_1],
+                                     'BANDS': '1,2',
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcomposite', '-i', source_1, '-cr', 'overwrite',
+                 '-cb', '1', '-cb', '2', '-co', 'COMPRESS=DEFLATE',
+                 '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
+                 '-o', output])
 
 
 if __name__ == '__main__':

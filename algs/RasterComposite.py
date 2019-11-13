@@ -29,6 +29,7 @@ import os
 
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterEnum,
@@ -131,7 +132,7 @@ class RasterComposite(PktoolsAlgorithm):
         arguments.append('-cr')
         arguments.append(self.rules[self.parameterAsEnum(parameters, self.RULE, context)][1])
 
-        bands = self.parameterAsString(parameters, self.RULE_BANDS, context)
+        bands = self.parameterAsString(parameters, self.BANDS, context)
         if bands == '':
             raise QgsProcessingException(self.tr('Please specify bands to use in composite rule.'))
         else:
