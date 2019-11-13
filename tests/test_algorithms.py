@@ -49,6 +49,7 @@ from processing_pktools.algs.RasterSampling import RasterSampling
 from processing_pktools.algs.RasterSvm import RasterSvm
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
+from processing_pktools.algs.RasterToVector import RasterToVector
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -890,6 +891,54 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-dstnodata', '-9999', '-o', output])
+
+    def testRasterToVector(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterToVector()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'mask.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.shp'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BAND': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkpolygonize', '-i', source, '-b', '2', '-n', 'DN',
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MASK': mask,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkpolygonize', '-i', source, '-b', '1', '-m', mask,
+                 '-n', 'DN', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FIELD_NAME': 'ELEV',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'ELEV',
+                 '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'NODATA': -9999,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
+                 '-nodata', '-9999.0', '-f', 'ESRI Shapefile', '-o', output])
+
 
 
 if __name__ == '__main__':
