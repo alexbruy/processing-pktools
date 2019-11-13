@@ -179,8 +179,11 @@ class RasterSvm(PktoolsAlgorithm):
         arguments.append(layer.source())
         arguments.append('-t')
         arguments.append(trainLayer)
-        arguments.append('-tln')
-        arguments.append(trainLayerName)
+        if trainLayerName:
+            arguments.append('-tln')
+            arguments.append(trainLayerName)
+        arguments.append('-label')
+        arguments.append(self.parameterAsString(parameters, self.FIELD, context))
         arguments.append('-svmt')
         arguments.append(self.svms[self.parameterAsEnum(parameters, self.SVM, context)][1])
         arguments.append('-kt')

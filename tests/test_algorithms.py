@@ -46,6 +46,7 @@ from processing_pktools.algs.RasterAnn import RasterAnn
 from processing_pktools.algs.RasterComposite import RasterComposite
 from processing_pktools.algs.RasterFromText import RasterFromText
 from processing_pktools.algs.RasterSampling import RasterSampling
+from processing_pktools.algs.RasterSvm import RasterSvm
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -658,6 +659,98 @@ class TestAlgorithms(unittest.TestCase):
                                      'OUTPUT': output}, context, feedback),
                 ['pkextractimg', '-i', source, '-s', mask, '-b', '1',
                  '-f', 'ESRI Shapefile', '-o', output])
+
+    def testRasterSvm(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterSvm()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        points = os.path.join(testDataPath, 'points.shp')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'SVM': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'one_class', '-kt', 'radial', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'KERNEL': 1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'polynomial', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'DEGREE': 5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-kd', '5', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'GAMMA': 1.5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-g', '1.5', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'COEF_0': 0.1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-c0', '0.1', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'ARGUMENTS': '-cv 2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-cv', '2', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pksvm', '-i', source, '-t', points, '-label', 'id',
+                 '-svmt', 'C_SVC', '-kt', 'radial', '-co', 'COMPRESS=DEFLATE',
+                 '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
+                 '-o', output])
 
 
 if __name__ == '__main__':
