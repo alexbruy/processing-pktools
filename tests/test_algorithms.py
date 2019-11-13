@@ -30,6 +30,7 @@ import tempfile
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
+                       QgsRectangle,
                       )
 from qgis.testing import (start_app,
                           unittest
@@ -39,6 +40,8 @@ from processing_pktools.algs.ApplyColorTable import ApplyColorTable
 from processing_pktools.algs.CreateColorTable import CreateColorTable
 from processing_pktools.algs.FillNoData import FillNoData
 from processing_pktools.algs.FilterDem import FilterDem
+from processing_pktools.algs.LasToRaster import LasToRaster
+from processing_pktools.algs.RandomSampling import RandomSampling
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -252,6 +255,119 @@ class TestAlgorithms(unittest.TestCase):
                  '-st', '0.0', '-minchange', '0', '-co', 'COMPRESS=DEFLATE',
                  '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
                  '-o', output])
+
+    def testLasToRaster(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = LasToRaster()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'point_cloud.las')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ATTRIBUTE': 0,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'intensity', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'COMPOSITE': 0,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'min',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FILTER': 0,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'first', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'EXTENT': '635616.3,638864.6,848977.79,853362.37',
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-ulx', '635616.3', '-uly', '853362.37',
+                 '-lrx', '638864.6', '-lry', '848977.79', '-dx', '1.0',
+                 '-dy', '1.0', '-a_srs', 'EPSG:2994', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'CLASSES': '2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-class', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'CLASSES': '3,4,5',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-class', '3', '-class', '4', '-class', '5', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'ARGUMENTS': '-nbin 15',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-nbin', '15', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE_X': 1,
+                                     'SIZE_Y': 1,
+                                     'CRS': 'EPSG:2994',
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
+                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
 
 
 if __name__ == '__main__':

@@ -130,7 +130,8 @@ class LasToRaster(PktoolsAlgorithm):
                                                      options=[i[0] for i in self.filters],
                                                      defaultValue=4))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
-                                                       self.tr('Extent to process')))
+                                                       self.tr('Extent to process'),
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.SIZE_X,
                                                       self.tr('Output X resolution, meters'),
                                                       type=QgsProcessingParameterNumber.Double,
@@ -172,7 +173,6 @@ class LasToRaster(PktoolsAlgorithm):
 
     def generateCommand(self, parameters, context, feedback):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
-        bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
@@ -185,14 +185,18 @@ class LasToRaster(PktoolsAlgorithm):
         arguments.append(self.composites[self.parameterAsEnum(parameters, self.COMPOSITE, context)][1])
         arguments.append('-fir')
         arguments.append(self.filters[self.parameterAsEnum(parameters, self.FILTER, context)][1])
-        arguments.append('-ulx')
-        arguments.append('{}'.format(bbox.xMinimum()))
-        arguments.append('-uly')
-        arguments.append('{}'.format(bbox.yMaximum()))
-        arguments.append('-lrx')
-        arguments.append('{}'.format(bbox.xMaximum()))
-        arguments.append('-lry')
-        arguments.append('{}'.format(bbox.yMinimum()))
+
+        if self.EXTENT in parameters and  parameters[self.EXTENT] is not None:
+            bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
+            arguments.append('-ulx')
+            arguments.append('{}'.format(bbox.xMinimum()))
+            arguments.append('-uly')
+            arguments.append('{}'.format(bbox.yMaximum()))
+            arguments.append('-lrx')
+            arguments.append('{}'.format(bbox.xMaximum()))
+            arguments.append('-lry')
+            arguments.append('{}'.format(bbox.yMinimum()))
+
         arguments.append('-dx')
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.SIZE_X, context)))
         arguments.append('-dy')
