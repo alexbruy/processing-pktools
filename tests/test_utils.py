@@ -76,6 +76,9 @@ class TestPktoolsUtils(unittest.TestCase):
         result = pktoolsUtils.parseCompositeOption('-c', '1; 2; 3', ';')
         self.assertEqual(result, ['-c', '1', '-c', '2', '-c' , '3'])
 
+        result = pktoolsUtils.parseCompositeOption('-b', [1])
+        self.assertEqual(result, ['-b', '1'])
+
         result = pktoolsUtils.parseCompositeOption('-b', [1, 2, 3])
         self.assertEqual(result, ['-b', '1', '-b', '2', '-b' , '3'])
 
