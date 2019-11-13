@@ -154,7 +154,6 @@ class RandomSampling(PktoolsAlgorithm):
         if rule == 'percentile' and (self.PERCENTILE not in parameters or parameters[self.PERCENTILE] is None):
             raise QgsProcessingException(self.tr('Please specify percentile or choose another extraction rule.'))
 
-
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []
@@ -170,9 +169,9 @@ class RandomSampling(PktoolsAlgorithm):
 
         if rule in ('mode', 'proportion', 'count'):
             classes = self.parameterAsString(parameters, self.CLASSES, context)
-            arguments.append(pktoolsUtils.parseCompositeOption('-c', classes))
+            arguments.extend(pktoolsUtils.parseCompositeOption('-c', classes))
 
-        if rule == 'persentile':
+        if rule == 'percentile':
             arguments.append('-perc')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.PERCENTILE, context)))
 
