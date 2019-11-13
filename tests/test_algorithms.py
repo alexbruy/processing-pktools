@@ -37,6 +37,7 @@ from qgis.testing import (start_app,
 
 from processing_pktools.algs.ApplyColorTable import ApplyColorTable
 from processing_pktools.algs.CreateColorTable import CreateColorTable
+from processing_pktools.algs.FillNoData import FillNoData
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -128,6 +129,57 @@ class TestAlgorithms(unittest.TestCase):
                   '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                   '-of', 'GTiff', '-o', output])
 
+    def testFillNoData(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = FillNoData()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MASK': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                 '-d', '0', '-it', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BANDS': [2],
+                                     'MASK': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '2',
+                 '-d', '0', '-it', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BANDS': [1, 2, 3],
+                                     'MASK': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                 '-b', '2', '-b', '3', '-d', '0', '-it', '0',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MASK': source,
+                                     'DISTANCE': 3,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                 '-d', '3', '-it', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MASK': source,
+                                     'ITERATIONS': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                 '-d', '0', '-it', '2', '-of', 'GTiff', '-o', output])
 
 
 if __name__ == '__main__':
