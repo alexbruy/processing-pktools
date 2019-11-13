@@ -42,6 +42,7 @@ from processing_pktools.algs.FillNoData import FillNoData
 from processing_pktools.algs.FilterDem import FilterDem
 from processing_pktools.algs.LasToRaster import LasToRaster
 from processing_pktools.algs.RandomSampling import RandomSampling
+from processing_pktools.algs.RasterAnn import RasterAnn
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -441,6 +442,74 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkextractogr', '-i', source, '-rand', '100', '-buf', '3',
                  '-r', 'centroid', '-b', '1', '-f', 'ESRI Shapefile',
                  '-o', output])
+
+    def testRasterAnn(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RasterAnn()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        points = os.path.join(testDataPath, 'points.shp')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'NEURONS': '5',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-nn', '5', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'NEURONS': '15,5',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-nn', '15', '-nn', '5', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'N_FOLD': '2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-cv', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'ARGUMENTS': '-b 2',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-b', '2', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'TRAINING': points,
+                                     'FIELD': 'id',
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkann', '-i', source, '-t', points, '-label', 'id',
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
+
 
 
 if __name__ == '__main__':

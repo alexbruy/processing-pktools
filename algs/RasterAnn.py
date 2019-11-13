@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsVectorFileWriter,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
@@ -145,12 +146,15 @@ class RasterAnn(PktoolsAlgorithm):
         arguments.append(layer.source())
         arguments.append('-t')
         arguments.append(trainLayer)
-        arguments.append('-tln')
-        arguments.append(trainLayerName)
+        if trainLayerName:
+            arguments.append('-tln')
+            arguments.append(trainLayerName)
+        arguments.append('-label')
+        arguments.append(self.parameterAsString(parameters, self.FIELD, context))
 
         if self.NEURONS in parameters and  parameters[self.NEURONS] is not None:
             neurons = self.parameterAsString(parameters, self.NEURONS, context)
-            arguments.append(pktoolsUtils.parseCompositeOption('-nn', neurons))
+            arguments.extend(pktoolsUtils.parseCompositeOption('-nn', neurons))
 
         if self.N_FOLD in parameters and  parameters[self.N_FOLD] is not None:
             arguments.append('-cv')
