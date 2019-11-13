@@ -128,7 +128,7 @@ class CreateColorTable(PktoolsAlgorithm):
             arguments.append('-g')
 
         if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
-            args = self.parameterAsString(parameters, self.ARGUMENTS, context)
+            args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
             if args:
                 arguments.extend(args)
 

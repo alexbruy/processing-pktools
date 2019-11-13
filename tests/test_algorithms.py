@@ -36,6 +36,7 @@ from qgis.testing import (start_app,
                          )
 
 from processing_pktools.algs.ApplyColorTable import ApplyColorTable
+from processing_pktools.algs.CreateColorTable import CreateColorTable
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -82,6 +83,51 @@ class TestAlgorithms(unittest.TestCase):
                                      'OUTPUT': output}, context, feedback),
                 ['pkcreatect', '-i', source, '-ct', colorTable,
                  '-legend', 'legend.png', '-of', 'GTiff', '-o', output])
+
+    def testCreateColorTable(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = CreateColorTable()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RANGE': [0, 100],
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcreatect', '-i', source, '-min', '0.0', '-max', '100.0',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RANGE': [0, 100],
+                                     'GRAYSCALE': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcreatect', '-i', source, '-min', '0.0', '-max', '100.0',
+                 '-g', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RANGE': [0, 100],
+                                     'ARGUMENTS': '-legend legend.png',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcreatect', '-i', source, '-min', '0.0', '-max', '100.0',
+                 '-legend', 'legend.png', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RANGE': [0, 100],
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkcreatect', '-i', source, '-min', '0.0', '-max', '100.0',
+                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                  '-of', 'GTiff', '-o', output])
+
 
 
 if __name__ == '__main__':
