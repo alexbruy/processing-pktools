@@ -38,6 +38,7 @@ from qgis.testing import (start_app,
 from processing_pktools.algs.ApplyColorTable import ApplyColorTable
 from processing_pktools.algs.CreateColorTable import CreateColorTable
 from processing_pktools.algs.FillNoData import FillNoData
+from processing_pktools.algs.FilterDem import FilterDem
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -126,8 +127,8 @@ class TestAlgorithms(unittest.TestCase):
                                      'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                      'OUTPUT': output}, context, feedback),
                 ['pkcreatect', '-i', source, '-min', '0.0', '-max', '100.0',
-                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
-                  '-of', 'GTiff', '-o', output])
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
 
     def testFillNoData(self):
         context = QgsProcessingContext()
@@ -180,6 +181,77 @@ class TestAlgorithms(unittest.TestCase):
                                      'OUTPUT': output}, context, feedback),
                 ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
                  '-d', '0', '-it', '2', '-of', 'GTiff', '-o', output])
+
+    def testFilterDem(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = FilterDem()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-st', '0.0', '-minchange', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FILTER': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'promorph', '-dim', '17',
+                 '-st', '0.0', '-minchange', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'KERNEL_SIZE': 20,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '20',
+                 '-st', '0.0', '-minchange', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CIRCULAR': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-circ', '-st', '0.0', '-minchange', '0', '-of', 'GTiff',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SLOPE_THRESHOLD': 1.5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-st', '1.5', '-minchange', '0', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MIN_CHANGE': 200,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-st', '0.0', '-minchange', '200', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ARGUMENTS': '-nodata -9999',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-st', '0.0', '-minchange', '0', '-nodata', '-9999',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilterdem', '-i', source, '-f', 'vito', '-dim', '17',
+                 '-st', '0.0', '-minchange', '0', '-co', 'COMPRESS=DEFLATE',
+                 '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
+                 '-o', output])
 
 
 if __name__ == '__main__':
