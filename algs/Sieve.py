@@ -33,7 +33,6 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterFile,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterString,
                        QgsProcessingParameterRasterDestination
@@ -122,7 +121,7 @@ class Sieve(PktoolsAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Output file')))
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def generateCommand(self, parameters, context, feedback):
         layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -144,7 +143,7 @@ class Sieve(PktoolsAlgorithm):
             mask = self.parameterAsString(parameters, self.MASK, context)
             if mask:
                 arguments.append('-m')
-                arguments.append(filePath)
+                arguments.append(mask)
 
         if self.OPTIONS in parameters and  parameters[self.OPTIONS] is not None:
             options = self.parameterAsString(parameters, self.OPTIONS, context)

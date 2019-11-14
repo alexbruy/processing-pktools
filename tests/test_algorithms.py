@@ -51,6 +51,7 @@ from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
 from processing_pktools.algs.RegularSampling import RegularSampling
+from processing_pktools.algs.Sieve import Sieve
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1012,6 +1013,61 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
                  '-r', 'centroid', '-b', '1', '-f', 'ESRI Shapefile',
                  '-o', output])
+
+    def testSieve(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = Sieve()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'mask.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BAND': 2,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '2', '-s', '0', '-c', '8',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SIZE': 100,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '1', '-s', '100', '-c', '8',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CONNECTEDNESS': 1,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '4',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'MASK': mask,
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                 '-m', mask, '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
 
 
 if __name__ == '__main__':
