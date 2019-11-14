@@ -3,7 +3,7 @@ name=pktools for Processing
 description=Set of handy image processing tools
 about=pktools is a GDAL-based suite of utilities written in C++ for image processing with a focus on remote sensing applications.
 category=Plugins
-version=0.1.0
+version=0.2.0
 qgisMinimumVersion=3.8
 
 icon=icons/pktools.svg

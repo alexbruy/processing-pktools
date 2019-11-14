@@ -1,5 +1,5 @@
-pktools for Processing
-----------------------
+# pktools for Processing [![Build Status](https://travis-ci.org/alexbruy/processing-pktools.svg?branch=master)](https://travis-ci.org/alexbruy/processing-pktools)
+
 pktools is a GDAL-based suite of utilities written in C++ for image
 processing with a focus on remote sensing applications.
 
