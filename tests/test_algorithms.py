@@ -54,6 +54,7 @@ from processing_pktools.algs.RegularSampling import RegularSampling
 from processing_pktools.algs.Sieve import Sieve
 from processing_pktools.algs.SpatialFilter import SpatialFilter
 from processing_pktools.algs.SpectralFilter import SpectralFilter
+from processing_pktools.algs.SunShadow import SunShadow
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1172,6 +1173,48 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkfilter', '-i', source, '-f', 'dilate', '-dz', '1',
                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                  '-of', 'GTiff', '-o', output])
+
+    def testSunShadow(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = SunShadow()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ZENITH_ANGLE': 10,
+                                     'AZIMUTH_ANGLE': 170,
+                                     'SHADOW': 50,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdsm2shadow', '-i', source, '-sza', '10.0', '-saa', '170.0',
+                 '-f', '50', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ZENITH_ANGLE': 10,
+                                     'AZIMUTH_ANGLE': 170,
+                                     'SHADOW': 50,
+                                     'ARGUMENTS': '-ot Float32',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdsm2shadow', '-i', source, '-sza', '10.0', '-saa', '170.0',
+                 '-f', '50', '-ot', 'Float32', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ZENITH_ANGLE': 10,
+                                     'AZIMUTH_ANGLE': 170,
+                                     'SHADOW': 50,
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdsm2shadow', '-i', source, '-sza', '10.0', '-saa', '170.0',
+                 '-f', '50', '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2',
+                 '-co', 'ZLEVEL=9', '-of', 'GTiff', '-o', output])
 
 
 if __name__ == '__main__':

@@ -95,7 +95,7 @@ class SunShadow(PktoolsAlgorithm):
                                                       defaultValue=None))
         self.addParameter(QgsProcessingParameterNumber(self.SHADOW,
                                                       self.tr('Value for shadow pixels'),
-                                                      type=QgsProcessingParameterNumber.Double,
+                                                      type=QgsProcessingParameterNumber.Integer,
                                                       defaultValue=0))
 
         params = []
@@ -136,7 +136,7 @@ class SunShadow(PktoolsAlgorithm):
         arguments.append('-saa')
         arguments.append('{}'.format(self.parameterAsDouble(parameters, self.AZIMUTH_ANGLE, context)))
         arguments.append('-f')
-        arguments.append('{}'.format(self.parameterAsDouble(parameters, self.SHADOW, context)))
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.SHADOW, context)))
 
         if self.ARGUMENTS in parameters and  parameters[self.ARGUMENTS] is not None:
             args = self.parameterAsString(parameters, self.ARGUMENTS, context).split(' ')
