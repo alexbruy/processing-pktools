@@ -52,6 +52,7 @@ from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
 from processing_pktools.algs.RegularSampling import RegularSampling
 from processing_pktools.algs.Sieve import Sieve
+from processing_pktools.algs.SpatialFilter import SpatialFilter
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1066,6 +1067,61 @@ class TestAlgorithms(unittest.TestCase):
                                      'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                      'OUTPUT': output}, context, feedback),
                 ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
+                 '-of', 'GTiff', '-o', output])
+
+    def testSpatialFilter(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = SpatialFilter()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.tif'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'dilate', '-dx', '3', '-dy', '3',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FILTER': 6,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'median', '-dx', '3', '-dy', '3',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'KERNEL_X': 5,
+                                     'KERNEL_Y': 5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'dilate', '-dx', '5', '-dy', '5',
+                 '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CIRCULAR': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'dilate', '-dx', '3', '-dy', '3',
+                 '-circ', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ARGUMENTS': '-pad symmetric',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'dilate', '-dx', '3', '-dy', '3',
+                 '-pad', 'symmetric', '-of', 'GTiff', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkfilter', '-i', source, '-f', 'dilate', '-dx', '3', '-dy', '3',
                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                  '-of', 'GTiff', '-o', output])
 
