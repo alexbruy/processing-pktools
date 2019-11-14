@@ -25,6 +25,6 @@ install:
   - docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/processing_pktools"
 
 script:
-  - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh tests.suite.test_all"
+  - docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh tests.suite.test_all"
 
 sudo: false
