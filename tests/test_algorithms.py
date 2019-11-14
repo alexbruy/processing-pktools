@@ -50,6 +50,7 @@ from processing_pktools.algs.RasterSvm import RasterSvm
 from processing_pktools.algs.RasterToTextExtent import RasterToTextExtent
 from processing_pktools.algs.RasterToTextMask import RasterToTextMask
 from processing_pktools.algs.RasterToVector import RasterToVector
+from processing_pktools.algs.RegularSampling import RegularSampling
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -939,6 +940,78 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
                  '-nodata', '-9999.0', '-f', 'ESRI Shapefile', '-o', output])
 
+    def testRegularSampling(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = RegularSampling()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.shp'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'centroid', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RULE': 0,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'point', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CELL_SIZE': 500,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '500', '-buf', '3',
+                 '-r', 'centroid', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'BUFFER': 5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '5',
+                 '-r', 'centroid', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'THRESHOLD': 50,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'centroid', '-t', '50.0', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RULE': 9,
+                                     'CLASSES': '5,10',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'mode', '-c', '5', '-c', '10', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'RULE': 12,
+                                     'PERCENTILE': 75,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'percentile', '-perc', '75.0', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'ARGUMENTS': '-b 1',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-grid', '100', '-buf', '3',
+                 '-r', 'centroid', '-b', '1', '-f', 'ESRI Shapefile',
+                 '-o', output])
 
 
 if __name__ == '__main__':
