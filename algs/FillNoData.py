@@ -102,6 +102,8 @@ class FillNoData(PktoolsAlgorithm):
             raise QgsProcessingException(self.invalidRasterError(parameters, self.MASK))
 
         bands = self.parameterAsInts(parameters, self.BANDS, context)
+        bands = [b - 1 for b in bands]
+
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
         arguments = []

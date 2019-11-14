@@ -144,7 +144,7 @@ class RasterToTextMask(PktoolsAlgorithm):
         arguments.append('-i')
         arguments.append(inLayer.source())
         arguments.append('-b')
-        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context) - 1))
         arguments.append('-of')
         arguments.append(self.formats[self.parameterAsEnum(parameters, self.FORMAT, context)][1])
         arguments.append('-e')

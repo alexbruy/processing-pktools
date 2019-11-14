@@ -129,7 +129,7 @@ class Sieve(PktoolsAlgorithm):
         arguments.append('-i')
         arguments.append(layer.source())
         arguments.append('-b')
-        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context) - 1))
         arguments.append('-s')
         arguments.append('{}'.format(self.parameterAsInt(parameters, self.SIZE, context)))
         arguments.append('-c')

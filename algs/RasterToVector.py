@@ -109,7 +109,7 @@ class RasterToVector(PktoolsAlgorithm):
         arguments.append('-i')
         arguments.append(layer.source())
         arguments.append('-b')
-        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context)))
+        arguments.append('{}'.format(self.parameterAsInt(parameters, self.BAND, context) - 1))
 
         if self.MASK in parameters and parameters[self.MASK] is not None:
             mask = self.parameterAsRasterLayer(parameters, self.MASK, context)

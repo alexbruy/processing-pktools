@@ -161,7 +161,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'MASK': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '0',
                  '-d', '0', '-it', '0', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
@@ -169,7 +169,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'BANDS': [2],
                                      'MASK': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pkfillnodata', '-i', source, '-m', source, '-b', '2',
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
                  '-d', '0', '-it', '0', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
@@ -177,8 +177,8 @@ class TestAlgorithms(unittest.TestCase):
                                      'BANDS': [1, 2, 3],
                                      'MASK': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
-                 '-b', '2', '-b', '3', '-d', '0', '-it', '0',
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '0',
+                 '-b', '1', '-b', '2', '-d', '0', '-it', '0',
                  '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
@@ -186,7 +186,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'MASK': source,
                                      'DISTANCE': 3,
                                      'OUTPUT': output}, context, feedback),
-                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '0',
                  '-d', '3', '-it', '0', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
@@ -194,7 +194,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'MASK': source,
                                      'ITERATIONS': 2,
                                      'OUTPUT': output}, context, feedback),
-                ['pkfillnodata', '-i', source, '-m', source, '-b', '1',
+                ['pkfillnodata', '-i', source, '-m', source, '-b', '0',
                  '-d', '0', '-it', '2', '-of', 'GTiff', '-o', output])
 
     def testFilterDem(self):
@@ -784,7 +784,7 @@ class TestAlgorithms(unittest.TestCase):
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
 
@@ -792,7 +792,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'BAND': 2,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '2', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
 
@@ -800,7 +800,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'EXTENT': '635616.3,638864.6,848977.79,853362.37',
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-ulx', '635616.3', '-uly', '853362.37',
                  '-lrx', '638864.6', '-lry', '848977.79',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
@@ -809,7 +809,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'FORMAT': 1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'list',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'list',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'near', '-o', output])
 
@@ -817,7 +817,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'RESAMPLING': 1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'bilinear', '-o', output])
 
@@ -826,7 +826,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'SIZE_X': 0.1,
                                      'SIZE_Y': 0.1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.1', '-dy', '0.1', '-r', 'near', '-o', output])
 
@@ -834,7 +834,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'ARGUMENTS': '-dstnodata -9999',
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-ulx', '0.0', '-uly', '0.0', '-lrx', '0.0', '-lry', '0.0',
                  '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-dstnodata', '-9999', '-o', output])
@@ -856,7 +856,7 @@ class TestAlgorithms(unittest.TestCase):
                 alg.generateCommand({'INPUT': source,
                                      'MASK': mask,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-o', output])
 
@@ -865,7 +865,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'BAND': 2,
                                      'MASK': mask,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '2', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-o', output])
 
@@ -874,7 +874,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'MASK': mask,
                                      'FORMAT': 1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'list',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'list',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-o', output])
 
@@ -883,7 +883,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'MASK': mask,
                                      'RESAMPLING': 1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'bilinear',
                  '-o', output])
 
@@ -893,7 +893,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'SIZE_X': 0.1,
                                      'SIZE_Y': 0.1,
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-e', mask, '-dx', '0.1', '-dy', '0.1', '-r', 'near',
                  '-o', output])
 
@@ -902,7 +902,7 @@ class TestAlgorithms(unittest.TestCase):
                                      'MASK': mask,
                                      'ARGUMENTS': '-dstnodata -9999',
                                      'OUTPUT': output}, context, feedback),
-                ['pkdumpimg', '-i', source, '-b', '1', '-of', 'matrix',
+                ['pkdumpimg', '-i', source, '-b', '0', '-of', 'matrix',
                  '-e', mask, '-dx', '0.0', '-dy', '0.0', '-r', 'near',
                  '-dstnodata', '-9999', '-o', output])
 
@@ -922,35 +922,35 @@ class TestAlgorithms(unittest.TestCase):
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
+                ['pkpolygonize', '-i', source, '-b', '0', '-n', 'DN',
                  '-f', 'ESRI Shapefile', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'BAND': 2,
                                      'OUTPUT': output}, context, feedback),
-                ['pkpolygonize', '-i', source, '-b', '2', '-n', 'DN',
+                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
                  '-f', 'ESRI Shapefile', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'MASK': mask,
                                      'OUTPUT': output}, context, feedback),
-                ['pkpolygonize', '-i', source, '-b', '1', '-m', mask,
+                ['pkpolygonize', '-i', source, '-b', '0', '-m', mask,
                  '-n', 'DN', '-f', 'ESRI Shapefile', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'FIELD_NAME': 'ELEV',
                                      'OUTPUT': output}, context, feedback),
-                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'ELEV',
+                ['pkpolygonize', '-i', source, '-b', '0', '-n', 'ELEV',
                  '-f', 'ESRI Shapefile', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'NODATA': -9999,
                                      'OUTPUT': output}, context, feedback),
-                ['pkpolygonize', '-i', source, '-b', '1', '-n', 'DN',
+                ['pkpolygonize', '-i', source, '-b', '0', '-n', 'DN',
                  '-nodata', '-9999.0', '-f', 'ESRI Shapefile', '-o', output])
 
     def testRegularSampling(self):
@@ -1042,42 +1042,42 @@ class TestAlgorithms(unittest.TestCase):
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                ['pksieve', '-i', source, '-b', '0', '-s', '0', '-c', '8',
                  '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'BAND': 2,
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '2', '-s', '0', '-c', '8',
+                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
                  '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'SIZE': 100,
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '1', '-s', '100', '-c', '8',
+                ['pksieve', '-i', source, '-b', '0', '-s', '100', '-c', '8',
                  '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'CONNECTEDNESS': 1,
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '4',
+                ['pksieve', '-i', source, '-b', '0', '-s', '0', '-c', '4',
                  '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'MASK': mask,
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                ['pksieve', '-i', source, '-b', '0', '-s', '0', '-c', '8',
                  '-m', mask, '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
                                      'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                      'OUTPUT': output}, context, feedback),
-                ['pksieve', '-i', source, '-b', '1', '-s', '0', '-c', '8',
+                ['pksieve', '-i', source, '-b', '0', '-s', '0', '-c', '8',
                  '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
                  '-of', 'GTiff', '-o', output])
 
