@@ -115,15 +115,22 @@ class VectorToText(PktoolsAlgorithm):
         arguments.append(self.commandName())
         arguments.append('-i')
         arguments.append(layer)
-        arguments.append('-ln')
-        arguments.append(layerName)
+        if layerName:
+            arguments.append('-ln')
+            arguments.append(layerName)
 
         useFields = False
         if self.FIELDS in parameters and parameters[self.FIELDS] is not None:
             fields = self.parameterAsString(parameters, self.FIELDS, context)
             if fields:
-                arguments.append(fields)
+                arguments.extend(pktoolsUtils.parseCompositeOption('-n', fields))
                 useFields = True
+
+        if self.SEPARATOR in parameters and  parameters[self.SEPARATOR] is not None:
+            sep = self.parameterAsString(parameters, self.SEPARATOR, context)
+            if sep:
+                arguments.append('-fs')
+                arguments.append(sep)
 
         if self.parameterAsBoolean(parameters, self.POSITION, context):
             arguments.append('-pos')

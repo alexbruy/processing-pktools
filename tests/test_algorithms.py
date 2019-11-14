@@ -57,6 +57,7 @@ from processing_pktools.algs.SpectralFilter import SpectralFilter
 from processing_pktools.algs.SunShadow import SunShadow
 from processing_pktools.algs.VectorFromText import VectorFromText
 from processing_pktools.algs.VectorSampling import VectorSampling
+from processing_pktools.algs.VectorToText import VectorToText
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1349,6 +1350,50 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
                  '-r', 'centroid', '-b', '1', '-f', 'ESRI Shapefile',
                  '-o', output])
+
+    def testVectorToText(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = VectorToText()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'points.shp')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.txt'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpogr', '-i', source, '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SEPARATOR': ';',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpogr', '-i', source, '-fs', ';', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FIELDS': 'id,label',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpogr', '-i', source, '-n', 'id', '-n', 'label',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FIELDS': 'id,label',
+                                     'TRANSPOSE': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpogr', '-i', source, '-n', 'id', '-n', 'label', '-t',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'POSITION': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkdumpogr', '-i', source, '-pos', '-o', output])
 
 
 if __name__ == '__main__':
