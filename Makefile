@@ -30,3 +30,11 @@ package: clean ts qm
 
 upload: package
 	plugin_uploader.py $(PLUGIN_NAME).zip
+
+check:
+	docker run -d --name qgis-testing-environment -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory -e DISPLAY=:99 qgis/qgis:latest
+	sleep 10
+	docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $(PLUGIN_NAME)"
+	docker exec -it qgis-testing-environment sh -c "rm -f /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/$(PLUGIN_NAME)"
+	docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/ /root/.local/share/QGIS/QGIS3/profiles/default/python/plugins/$(PLUGIN_NAME)"
+	docker exec -it qgis-testing-environment sh -c "cd /tests_directory && qgis_testrunner.sh tests.suite.test_all"
