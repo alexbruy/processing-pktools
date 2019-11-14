@@ -31,7 +31,6 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
 PKTOOLS_DIRECTORY = 'PKTOOLS_DIRECTORY'
-PKTOOLS_VERBOSE = 'PKTOOLS_VERBOSE'
 
 
 def pktoolsDirectory():
@@ -91,6 +90,3 @@ def execute(commands, feedback=None):
                 loglines.append(line)
         except:
             pass
-
-    if ProcessingConfig.getSetting(PKTOOLS_VERBOSE):
-        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

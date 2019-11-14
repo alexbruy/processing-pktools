@@ -80,17 +80,12 @@ class PktoolsProvider(QgsProcessingProvider):
                                             self.tr('pktools directory'),
                                             pktoolsUtils.pktoolsDirectory(),
                                             valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(self.name(),
-                                            pktoolsUtils.PKTOOLS_VERBOSE,
-                                            self.tr('Log commands output'),
-                                            False))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
 
     def unload(self):
         ProcessingConfig.removeSetting(pktoolsUtils.PKTOOLS_DIRECTORY)
-        ProcessingConfig.removeSetting(pktoolsUtils.PKTOOLS_VERBOSE)
 
     def supportsNonFileBasedOutput(self):
         return False
