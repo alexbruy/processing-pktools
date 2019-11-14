@@ -55,6 +55,7 @@ from processing_pktools.algs.Sieve import Sieve
 from processing_pktools.algs.SpatialFilter import SpatialFilter
 from processing_pktools.algs.SpectralFilter import SpectralFilter
 from processing_pktools.algs.SunShadow import SunShadow
+from processing_pktools.algs.VectorFromText import VectorFromText
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1215,6 +1216,64 @@ class TestAlgorithms(unittest.TestCase):
                 ['pkdsm2shadow', '-i', source, '-sza', '10.0', '-saa', '170.0',
                  '-f', '50', '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2',
                  '-co', 'ZLEVEL=9', '-of', 'GTiff', '-o', output])
+
+    def testVectorFromText(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = VectorFromText()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'data.txt')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.shp'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
+                 '-a_srs', 'EPSG:4326', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'COLUMN_X': 3,
+                                     'COLUMN_Y': 4,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '3', '-y', '4',
+                 '-a_srs', 'EPSG:4326', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CRS': 'EPSG:3857',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
+                 '-a_srs', 'EPSG:3857', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'FIELDS': '-n id -ot Integer -n label -ot Integer',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
+                 '-a_srs', 'EPSG:4326', '-n', 'id', '-ot', 'Integer',
+                 '-n', 'label', '-ot', 'Integer', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SEPARATOR': ';',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
+                 '-a_srs', 'EPSG:4326', '-fs', ';', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'CREATE_POLYGON': True,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
+                 '-a_srs', 'EPSG:4326', '-l', '-f', 'ESRI Shapefile',
+                 '-o', output])
 
 
 if __name__ == '__main__':

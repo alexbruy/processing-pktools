@@ -131,9 +131,9 @@ class VectorFromText(PktoolsAlgorithm):
         arguments.append(crs.authid())
 
         if self.FIELDS in parameters and parameters[self.FIELDS] is not None:
-            fields = self.parameterAsString(parameters, self.FIELDS, context)
+            fields = self.parameterAsString(parameters, self.FIELDS, context).split(' ')
             if fields:
-                arguments.append(fields)
+                arguments.extend(fields)
 
         if self.SEPARATOR in parameters and  parameters[self.SEPARATOR] is not None:
             sep = self.parameterAsString(parameters, self.SEPARATOR, context)
@@ -144,7 +144,7 @@ class VectorFromText(PktoolsAlgorithm):
         if self.parameterAsBoolean(parameters, self.CREATE_POLYGON, context):
             arguments.append('-l')
 
-        arguments.append('-of')
+        arguments.append('-f')
         arguments.append(QgsVectorFileWriter.driverForExtension(os.path.splitext(output)[1]))
         arguments.append('-o')
         arguments.append(output)
