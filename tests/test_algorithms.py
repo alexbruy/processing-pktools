@@ -287,8 +287,9 @@ class TestAlgorithms(unittest.TestCase):
                                      'CRS': 'EPSG:2994',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -298,8 +299,9 @@ class TestAlgorithms(unittest.TestCase):
                                      'CRS': 'EPSG:2994',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'intensity', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -309,8 +311,9 @@ class TestAlgorithms(unittest.TestCase):
                                      'CRS': 'EPSG:2994',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'min',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -320,8 +323,9 @@ class TestAlgorithms(unittest.TestCase):
                                      'CRS': 'EPSG:2994',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'first', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-of', 'GTiff', '-o', output])
+                 '-fir', 'first', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -343,8 +347,9 @@ class TestAlgorithms(unittest.TestCase):
                                      'CLASSES': '2',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-class', '2', '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-class', '2', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -354,9 +359,10 @@ class TestAlgorithms(unittest.TestCase):
                                      'CLASSES': '3,4,5',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-class', '3', '-class', '4', '-class', '5', '-of', 'GTiff',
-                 '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-class', '3', '-class', '4',
+                 '-class', '5', '-of', 'GTiff', '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -366,8 +372,10 @@ class TestAlgorithms(unittest.TestCase):
                                      'ARGUMENTS': '-nbin 15',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-nbin', '15', '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-nbin', '15', '-of', 'GTiff',
+                 '-o', output])
 
             self.assertEqual(
                 alg.generateCommand({'INPUT': source,
@@ -377,9 +385,11 @@ class TestAlgorithms(unittest.TestCase):
                                      'OPTIONS': 'COMPRESS=DEFLATE|PREDICTOR=2|ZLEVEL=9',
                                      'OUTPUT': output}, context, feedback),
                 ['pklas2img', '-i', source, '-n', 'z', '-comp', 'last',
-                 '-fir', 'all', '-dx', '1.0', '-dy', '1.0', '-a_srs', 'EPSG:2994',
-                 '-co', 'COMPRESS=DEFLATE', '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9',
-                 '-of', 'GTiff', '-o', output])
+                 '-fir', 'all', '-ulx', '0.0', '-uly', '0.0',
+                 '-lrx', '0.0', '-lry', '0.0', '-dx', '1.0', '-dy', '1.0',
+                 '-a_srs', 'EPSG:2994', '-co', 'COMPRESS=DEFLATE',
+                 '-co', 'PREDICTOR=2', '-co', 'ZLEVEL=9', '-of', 'GTiff',
+                 '-o', output])
 
     def testRandomSampling(self):
         context = QgsProcessingContext()
