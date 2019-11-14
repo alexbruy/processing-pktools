@@ -175,8 +175,9 @@ class VectorSampling(PktoolsAlgorithm):
         arguments.append(layer.source())
         arguments.append('-s')
         arguments.append(sampleLayer)
-        arguments.append('-ln')
-        arguments.append(sampleLayerName)
+        if sampleLayerName:
+            arguments.append('-ln')
+            arguments.append(sampleLayerName)
         arguments.append('-buf')
         arguments.append('{}'.format(self.parameterAsInt(parameters, self.BUFFER, context)))
         arguments.append('-r')
@@ -184,9 +185,9 @@ class VectorSampling(PktoolsAlgorithm):
 
         if rule in ('mode', 'proportion', 'count'):
             classes = self.parameterAsString(parameters, self.CLASSES, context)
-            arguments.append(pktoolsUtils.parseCompositeOption('-c', classes))
+            arguments.extend(pktoolsUtils.parseCompositeOption('-c', classes))
 
-        if rule == 'persentile':
+        if rule == 'percentile':
             arguments.append('-perc')
             arguments.append('{}'.format(self.parameterAsDouble(parameters, self.PERCENTILE, context)))
 

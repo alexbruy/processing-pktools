@@ -56,6 +56,7 @@ from processing_pktools.algs.SpatialFilter import SpatialFilter
 from processing_pktools.algs.SpectralFilter import SpectralFilter
 from processing_pktools.algs.SunShadow import SunShadow
 from processing_pktools.algs.VectorFromText import VectorFromText
+from processing_pktools.algs.VectorSampling import VectorSampling
 
 testDataPath = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -1273,6 +1274,80 @@ class TestAlgorithms(unittest.TestCase):
                                      'OUTPUT': output}, context, feedback),
                 ['pkascii2ogr', '-i', source, '-x', '0', '-y', '1',
                  '-a_srs', 'EPSG:4326', '-l', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+    def testVectorSampling(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        alg = VectorSampling()
+        alg.initAlgorithm()
+
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'mask.shp')
+
+        with tempfile.TemporaryDirectory() as outdir:
+            output = outdir + '/check.shp'
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'centroid', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'RULE': 0,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'point', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'BUFFER': 5,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '5',
+                 '-r', 'centroid', '-f', 'ESRI Shapefile', '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'THRESHOLD': 50,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'centroid', '-t', '50.0', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'RULE': 9,
+                                     'CLASSES': '5,10',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'mode', '-c', '5', '-c', '10', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'RULE': 12,
+                                     'PERCENTILE': 75,
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'percentile', '-perc', '75.0', '-f', 'ESRI Shapefile',
+                 '-o', output])
+
+            self.assertEqual(
+                alg.generateCommand({'INPUT': source,
+                                     'SAMPLES': mask,
+                                     'ARGUMENTS': '-b 1',
+                                     'OUTPUT': output}, context, feedback),
+                ['pkextractogr', '-i', source, '-s', mask, '-buf', '3',
+                 '-r', 'centroid', '-b', '1', '-f', 'ESRI Shapefile',
                  '-o', output])
 
 
