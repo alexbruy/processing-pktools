@@ -26,8 +26,7 @@ import sys
 import shlex
 import subprocess
 
-from qgis.core import Qgis, QgsMessageLog, QgsProcessingFeedback
-from processing.core.ProcessingLog import ProcessingLog
+from qgis.core import QgsProcessingFeedback
 from processing.core.ProcessingConfig import ProcessingConfig
 
 PKTOOLS_DIRECTORY = 'PKTOOLS_DIRECTORY'
@@ -72,7 +71,6 @@ def execute(commands, feedback=None):
     if feedback is None:
         feedback = QgsProcessingFeedback()
 
-    QgsMessageLog.logMessage(command, 'Processing', Qgis.Info)
     feedback.pushInfo('pktools command:')
     feedback.pushCommandInfo(command)
     feedback.pushInfo('pktools command output:')
